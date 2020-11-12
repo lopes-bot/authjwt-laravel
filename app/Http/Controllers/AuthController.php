@@ -56,7 +56,7 @@ class AuthController extends Controller
     }
 
     public function profile(){
-
+        return response()->json($this->guard()->user());
     }
     public function refresh(){
 
