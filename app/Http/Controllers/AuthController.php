@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validador;
-
+use App\Models\User;
 class AuthController extends Controller
 {
     public function __construct(){
@@ -30,7 +30,23 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
     public function register(Request $request){
+        $validator = Validator::make($request->all(),[
+            'name'=>'require|string|between:2,100',
+            'email'=>'required|email|unique:users',
+            'password'=>'required|confirmed|min:6'
+        ]);
+        if($validator->fails()):
+            return response()->json([
+                $validator->errors()
+            ],422);
+        endif;
 
+        $user = User::create(array_merge(
+           $validator->validated(),
+           ['password'=>bcrypt($request->password)]
+        ));
+
+        return response()->json(['messege'=>'User created successfully','user'=>$user]);
 
     }
     public function logout(){
