@@ -59,7 +59,7 @@ class AuthController extends Controller
         return response()->json($this->guard()->user());
     }
     public function refresh(){
-
+        return $this->respondWithToken($this->guard()->refresh());
     }
     protected function respondWithToken($token){
         return response()->json([
